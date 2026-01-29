@@ -2,13 +2,13 @@
 // CONFIGURATION FIREBASE (À REMPLACER PAR VOS CLÉS)
 // ==========================================
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "your-app.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-app.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "your-app-id"
-};
+    apiKey: "AIzaSyCibwZYqsE_vIwFSY9OnscWfaqRsUENxz4",
+    authDomain: "tripplanner-db7b8.firebaseapp.com",
+    projectId: "tripplanner-db7b8",
+    storageBucket: "tripplanner-db7b8.firebasestorage.app",
+    messagingSenderId: "486979143009",
+    appId: "1:486979143009:web:5a4da570f16ee996ea3120"
+  };
 
 // Initialisation Firebase (optionnelle si pas config)
 let auth = null;
