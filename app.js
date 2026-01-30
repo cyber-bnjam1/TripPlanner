@@ -1579,3 +1579,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // Premier rendu
   Router.renderPage();
 });
+
