@@ -266,50 +266,83 @@ const Transport = {
     
     content.innerHTML = `
       <div class="modal-header">
-        <h2 class="modal-title">✈️ Vol Aller</h2>
+        <h2 class="modal-title">✈️ Transport Aérien</h2>
         <button class="modal-close" onclick="Trips.closeModal()">×</button>
       </div>
       <form id="transport-form">
-        <div class="form-group" style="position: relative;">
-          <label class="form-label">De (aéroport)</label>
-          <input type="text" class="form-input" id="from-search" placeholder="CDG, Paris..." value="${current?.outbound?.fromCode || ''}" autocomplete="off">
-          <input type="hidden" id="from-code" value="${current?.outbound?.fromCode || ''}">
-          <input type="hidden" id="from-name" value="${current?.outbound?.from || ''}">
-          <div id="from-suggestions" class="autocomplete-suggestions"></div>
+        <!-- VOL ALLER -->
+        <div style="background: rgba(0,122,255,0.05); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+          <div style="font-weight: 700; margin-bottom: 12px; color: var(--ios-blue);">✈️ Vol Aller</div>
+          <div class="form-group" style="position: relative;">
+            <label class="form-label">De (aéroport)</label>
+            <input type="text" class="form-input" id="from-search" placeholder="CDG, Paris..." value="${current?.outbound?.fromCode || ''}" autocomplete="off">
+            <input type="hidden" id="from-code" value="${current?.outbound?.fromCode || ''}">
+            <input type="hidden" id="from-name" value="${current?.outbound?.from || ''}">
+            <div id="from-suggestions" class="autocomplete-suggestions"></div>
+          </div>
+          <div class="form-group" style="position: relative;">
+            <label class="form-label">Vers (aéroport)</label>
+            <input type="text" class="form-input" id="to-search" placeholder="JFK, New York..." value="${current?.outbound?.toCode || ''}" autocomplete="off">
+            <input type="hidden" id="to-code" value="${current?.outbound?.toCode || ''}">
+            <input type="hidden" id="to-name" value="${current?.outbound?.to || ''}">
+            <div id="to-suggestions" class="autocomplete-suggestions"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Date départ</label><input type="date" class="form-input" id="outbound-date" value="${current?.outbound?.date || ''}"></div>
+            <div class="form-group"><label class="form-label">Heure</label><input type="time" class="form-input" id="outbound-time" value="${current?.outbound?.time || ''}"></div>
+          </div>
         </div>
-        <div class="form-group" style="position: relative;">
-          <label class="form-label">Vers (aéroport)</label>
-          <input type="text" class="form-input" id="to-search" placeholder="JFK, New York..." value="${current?.outbound?.toCode || ''}" autocomplete="off">
-          <input type="hidden" id="to-code" value="${current?.outbound?.toCode || ''}">
-          <input type="hidden" id="to-name" value="${current?.outbound?.to || ''}">
-          <div id="to-suggestions" class="autocomplete-suggestions"></div>
+
+        <!-- VOL RETOUR -->
+        <div style="background: rgba(175,82,222,0.05); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-weight: 700; color: var(--ios-purple);">🔄 Vol Retour</div>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="has-return" ${current?.return ? 'checked' : ''} onchange="Transport.toggleReturn()">
+              <span style="font-size: 13px;">Ajouter un retour</span>
+            </label>
+          </div>
+          <div id="return-section" style="${current?.return ? '' : 'display: none;'}">
+            <div class="form-group" style="position: relative;">
+              <label class="form-label">De (aéroport)</label>
+              <input type="text" class="form-input" id="return-from-search" placeholder="JFK, New York..." value="${current?.return?.fromCode || ''}" autocomplete="off">
+              <input type="hidden" id="return-from-code" value="${current?.return?.fromCode || ''}">
+              <input type="hidden" id="return-from-name" value="${current?.return?.from || ''}">
+              <div id="return-from-suggestions" class="autocomplete-suggestions"></div>
+            </div>
+            <div class="form-group" style="position: relative;">
+              <label class="form-label">Vers (aéroport)</label>
+              <input type="text" class="form-input" id="return-to-search" placeholder="CDG, Paris..." value="${current?.return?.toCode || ''}" autocomplete="off">
+              <input type="hidden" id="return-to-code" value="${current?.return?.toCode || ''}">
+              <input type="hidden" id="return-to-name" value="${current?.return?.to || ''}">
+              <div id="return-to-suggestions" class="autocomplete-suggestions"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Date retour</label><input type="date" class="form-input" id="return-date" value="${current?.return?.date || ''}"></div>
+              <div class="form-group"><label class="form-label">Heure</label><input type="time" class="form-input" id="return-time" value="${current?.return?.time || ''}"></div>
+            </div>
+          </div>
         </div>
+
+        <!-- INFOS COMMUNES -->
         <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Compagnie</label>
-            <input type="text" class="form-input" id="trans-company" value="${current?.outbound?.company || ''}" placeholder="Air France">
-          </div>
-          <div class="form-group">
-            <label class="form-label">N° Vol</label>
-            <input type="text" class="form-input" id="trans-flight" value="${current?.outbound?.flightNumber || ''}" placeholder="AF023">
-          </div>
+          <div class="form-group"><label class="form-label">Compagnie</label><input type="text" class="form-input" id="trans-company" value="${current?.outbound?.company || ''}" placeholder="Air France"></div>
+          <div class="form-group"><label class="form-label">N° Vol</label><input type="text" class="form-input" id="trans-flight" value="${current?.outbound?.flightNumber || ''}" placeholder="AF023"></div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Prix (€)</label>
-            <input type="number" class="form-input" id="trans-price" value="${current?.outbound?.price || ''}">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Date</label>
-            <input type="date" class="form-input" id="trans-date" value="${current?.outbound?.date || ''}">
-          </div>
+        <div class="form-group">
+          <label class="form-label">Prix total (€)</label>
+          <input type="number" class="form-input" id="trans-price" value="${current?.outbound?.price || ''}" placeholder="Prix aller + retour">
         </div>
+        
         <button type="submit" class="btn-primary">Sauvegarder</button>
+        ${current?.outbound ? `<button type="button" class="btn-danger" onclick="Transport.delete()" style="margin-top: 12px;">Supprimer les vols</button>` : ''}
       </form>
     `;
     
     this.setupAirportAutocomplete('from');
     this.setupAirportAutocomplete('to');
+    this.setupAirportAutocomplete('return-from');
+    this.setupAirportAutocomplete('return-to');
     
     modal.classList.remove('hidden');
     document.getElementById('transport-form').onsubmit = (e) => {
@@ -323,14 +356,61 @@ const Transport = {
           company: document.getElementById('trans-company').value,
           flightNumber: document.getElementById('trans-flight').value,
           price: document.getElementById('trans-price').value,
-          date: document.getElementById('trans-date').value,
+          date: document.getElementById('outbound-date').value,
+          time: document.getElementById('outbound-time').value,
           type: 'avion'
         }
       };
+      
+      // Ajouter le retour si coché
+      if (document.getElementById('has-return').checked) {
+        transport.return = {
+          fromCode: document.getElementById('return-from-code').value,
+          from: document.getElementById('return-from-name').value,
+          toCode: document.getElementById('return-to-code').value,
+          to: document.getElementById('return-to-name').value,
+          company: document.getElementById('trans-company').value,
+          flightNumber: document.getElementById('trans-flight').value,
+          date: document.getElementById('return-date').value,
+          time: document.getElementById('return-time').value,
+          type: 'avion'
+        };
+      }
+      
       Storage.saveTransport(Router.currentTripId, transport);
       Trips.closeModal();
       Router.renderPage();
     };
+  },
+  
+  toggleReturn() {
+    const checked = document.getElementById('has-return').checked;
+    document.getElementById('return-section').style.display = checked ? 'block' : 'none';
+    // Pré-remplir avec les aéroports inversés
+    if (checked) {
+      const fromCode = document.getElementById('from-code').value;
+      const fromName = document.getElementById('from-name').value;
+      const toCode = document.getElementById('to-code').value;
+      const toName = document.getElementById('to-name').value;
+      if (toCode && !document.getElementById('return-from-code').value) {
+        document.getElementById('return-from-search').value = `${toCode} - ${toName || toCode}`;
+        document.getElementById('return-from-code').value = toCode;
+        document.getElementById('return-from-name').value = toName;
+      }
+      if (fromCode && !document.getElementById('return-to-code').value) {
+        document.getElementById('return-to-search').value = `${fromCode} - ${fromName || fromCode}`;
+        document.getElementById('return-to-code').value = fromCode;
+        document.getElementById('return-to-name').value = fromName;
+      }
+    }
+  },
+  
+  delete() {
+    if (confirm('Supprimer tous les vols ?')) {
+      Storage.saveTransport(Router.currentTripId, { outbound: null });
+      Trips.closeModal();
+      Router.renderPage();
+    }
   },
   
   setupAirportAutocomplete(direction) {
@@ -338,6 +418,8 @@ const Transport = {
     const suggestions = document.getElementById(`${direction}-suggestions`);
     const codeInput = document.getElementById(`${direction}-code`);
     const nameInput = document.getElementById(`${direction}-name`);
+    
+    if (!input) return;
     
     input.addEventListener('input', (e) => {
       const query = e.target.value;
@@ -379,6 +461,7 @@ const Transport = {
     return String.fromCodePoint(...points);
   }
 };
+
 
 const Trips = {
   currentFilter: 'template',
@@ -952,16 +1035,67 @@ const MapView = {
 };
 
 const Budget = {
-  categories: { transport: '✈️', hebergement: '🏨', activites: '🎭', nourriture: '🍽️', shopping: '🛍️' },
+  categories: { transport: '✈️', hebergement: '🏨', activites: '🎭', nourriture: '🍽️', shopping: '🛍️', divers: '📦' },
+  
+  // Calculer le budget automatiquement depuis les données
+  calculateAutoBudget(tripId) {
+    const budget = Storage.getBudget(tripId);
+    const transport = Storage.getTransport(tripId);
+    const hotel = Storage.getHotel(tripId);
+    const days = Storage.getDays(tripId);
+    
+    // Initialiser les catégories si pas existantes
+    if (!budget.categories) budget.categories = {};
+    
+    // Transport (vols)
+    const flightPrice = parseFloat(transport?.outbound?.price) || 0;
+    if (flightPrice > 0) {
+      if (!budget.categories.transport) budget.categories.transport = { estimated: 0, spent: 0, auto: true };
+      budget.categories.transport.estimated = flightPrice;
+      budget.categories.transport.auto = true;
+    }
+    
+    // Hébergement
+    const hotelPrice = parseFloat(hotel?.price) || 0;
+    if (hotelPrice > 0) {
+      if (!budget.categories.hebergement) budget.categories.hebergement = { estimated: 0, spent: 0, auto: true };
+      budget.categories.hebergement.estimated = hotelPrice;
+      budget.categories.hebergement.auto = true;
+    }
+    
+    // Activités (compter les activités dans l'itinéraire)
+    let activitiesCount = 0;
+    days.forEach(day => {
+      activitiesCount += (day.activities || []).length;
+    });
+    if (activitiesCount > 0) {
+      if (!budget.categories.activites) budget.categories.activites = { estimated: 0, spent: 0 };
+      // Estimation : 30€ par activité si pas déjà défini manuellement
+      if (!budget.categories.activites.estimated || budget.categories.activites.estimated === 0) {
+        budget.categories.activites.estimated = activitiesCount * 30;
+      }
+    }
+    
+    Storage.saveBudget(tripId, budget);
+    return budget;
+  },
   
   render(container, tripId) {
-    const budget = Storage.getBudget(tripId);
+    // Calculer automatiquement avant d'afficher
+    const budget = this.calculateAutoBudget(tripId);
+    
     let total = 0;
     let spent = 0;
-    Object.values(budget.categories || {}).forEach(c => {
+    let autoTotal = 0;
+    
+    Object.entries(budget.categories || {}).forEach(([key, c]) => {
       total += c.estimated || 0;
       spent += c.spent || 0;
+      if (c.auto) autoTotal += c.estimated || 0;
     });
+    
+    const trip = Storage.getTrip(tripId);
+    const tripBudget = trip?.budget || 0;
     
     const header = document.createElement('div');
     header.style.cssText = 'background: linear-gradient(135deg, var(--ios-green), #30b350); color: white; padding: 24px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(52,199,89,0.3);';
@@ -970,6 +1104,7 @@ const Budget = {
         <div>
           <div style="font-size: 13px; opacity: 0.9; margin-bottom: 4px;">Budget total estimé</div>
           <div style="font-size: 36px; font-weight: 700;">${total}€</div>
+          ${tripBudget > 0 ? `<div style="font-size: 13px; opacity: 0.8; margin-top: 4px;">Budget initial: ${tripBudget}€</div>` : ''}
         </div>
         <div style="text-align: right;">
           <div style="font-size: 13px; opacity: 0.9; margin-bottom: 4px;">Dépensé</div>
@@ -979,18 +1114,57 @@ const Budget = {
       <div style="background: rgba(255,255,255,0.2); height: 6px; border-radius: 3px; overflow: hidden;">
         <div style="background: white; height: 100%; width: ${total > 0 ? Math.min((spent/total)*100, 100) : 0}%; transition: width 0.5s ease;"></div>
       </div>
+      ${autoTotal > 0 ? `<div style="margin-top: 12px; font-size: 12px; opacity: 0.9;">🔄 ${autoTotal}€ calculés auto (vols + hôtel)</div>` : ''}
     `;
     container.appendChild(header);
+    
+    // Récap des sources automatiques
+    const transport = Storage.getTransport(tripId);
+    const hotel = Storage.getHotel(tripId);
+    
+    if (transport?.outbound || hotel) {
+      const sources = document.createElement('div');
+      sources.style.cssText = 'background: white; padding: 16px; border-radius: 12px; margin-bottom: 20px; box-shadow: var(--shadow);';
+      sources.innerHTML = `<div style="font-weight: 600; margin-bottom: 12px; font-size: 15px;">📊 Sources du budget</div>`;
+      
+      if (transport?.outbound) {
+        const price = transport.outbound.price || 0;
+        sources.innerHTML += `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f2f2f7;">
+            <div style="display: flex; align-items: center; gap: 8px;"><span>✈️</span> Vol ${transport.outbound.fromCode}→${transport.outbound.toCode}</div>
+            <div style="font-weight: 600; color: var(--ios-blue);">${price}€</div>
+          </div>
+        `;
+      }
+      if (transport?.return) {
+        sources.innerHTML += `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f2f2f7;">
+            <div style="display: flex; align-items: center; gap: 8px;"><span>🔄</span> Vol retour ${transport.return.fromCode}→${transport.return.toCode}</div>
+            <div style="font-size: 12px; color: var(--text-tertiary);">inclus dans le prix total</div>
+          </div>
+        `;
+      }
+      if (hotel) {
+        sources.innerHTML += `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
+            <div style="display: flex; align-items: center; gap: 8px;"><span>🏨</span> ${hotel.name}</div>
+            <div style="font-weight: 600; color: var(--ios-orange);">${hotel.price || 0}€</div>
+          </div>
+        `;
+      }
+      container.appendChild(sources);
+    }
     
     const grid = document.createElement('div');
     grid.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 12px;';
     Object.entries(this.categories).forEach(([key, icon]) => {
       const cat = budget.categories?.[key] || { estimated: 0, spent: 0 };
       const percent = cat.estimated > 0 ? Math.round((cat.spent || 0) / cat.estimated * 100) : 0;
+      const isAuto = cat.auto ? '🔄 ' : '';
       grid.innerHTML += `
-        <div class="card" onclick="Budget.editCategory('${key}')" style="text-align: center; padding: 20px; cursor: pointer;">
+        <div class="card" onclick="Budget.editCategory('${key}')" style="text-align: center; padding: 20px; cursor: pointer; ${cat.auto ? 'border: 2px solid var(--ios-blue);' : ''}">
           <div style="font-size: 32px; margin-bottom: 8px;">${icon}</div>
-          <div style="font-size: 13px; color: var(--text-tertiary); margin-bottom: 4px; text-transform: capitalize;">${key}</div>
+          <div style="font-size: 13px; color: var(--text-tertiary); margin-bottom: 4px; text-transform: capitalize;">${isAuto}${key}</div>
           <div style="font-size: 20px; font-weight: 700; margin-bottom: 4px;">${cat.estimated}€</div>
           ${cat.spent ? `<div style="font-size: 12px; color: ${percent > 100 ? 'var(--ios-red)' : 'var(--ios-green)'}; font-weight: 600;">${cat.spent}€ dépensé</div>` : ''}
         </div>
@@ -1007,7 +1181,12 @@ const Budget = {
     if (!budget.categories[key]) budget.categories[key] = { estimated: 0, spent: 0 };
     
     const current = budget.categories[key];
-    const estimated = prompt('Budget estimé (€):', current.estimated || 0);
+    const isAuto = current.auto;
+    
+    const estimated = prompt(
+      `Budget estimé pour ${key}${isAuto ? ' (🔄 auto)' : ''} (€):`, 
+      current.estimated || 0
+    );
     if (estimated === null) return;
     
     const spent = prompt('Déjà dépensé (€):', current.spent || 0);
@@ -1015,11 +1194,23 @@ const Budget = {
     
     budget.categories[key] = { 
       estimated: parseFloat(estimated) || 0,
-      spent: parseFloat(spent) || 0
+      spent: parseFloat(spent) || 0,
+      auto: isAuto // Garder le flag auto
     };
     Storage.saveBudget(Router.currentTripId, budget);
     Router.renderPage();
   },
+  
+  addExpense() {
+    const categories = Object.keys(this.categories);
+    const choice = prompt('Catégorie:\n' + categories.map((c, i) => `${i+1}. ${c}`).join('\n') + '\n\nNuméro:');
+    const idx = parseInt(choice) - 1;
+    if (idx >= 0 && idx < categories.length) {
+      this.editCategory(categories[idx]);
+    }
+  }
+};
+
   
   addExpense() {
     this.editCategory('divers');
