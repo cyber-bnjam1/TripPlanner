@@ -24,6 +24,33 @@ try {
 } catch (e) {
   console.log("Firebase non configuré");
 }
+// ==========================================
+// MOTEUR DE RECHERCHE AÉROPORTS
+// ==========================================
+const AirportSearch = {
+  search(query) {
+    // Sécurité : si la base de données n'est pas chargée
+    if (typeof AirportsDB === 'undefined') {
+        console.error("Erreur : Le fichier airports.js n'est pas chargé correctement.");
+        return [];
+    }
+    
+    const q = query.toLowerCase().trim();
+    if (q.length < 2) return [];
+
+    // Recherche dans le code IATA (ex: CDG), la ville ou le nom
+    return AirportsDB.filter(a => 
+      (a.code && a.code.toLowerCase().includes(q)) ||
+      (a.city && a.city.toLowerCase().includes(q)) ||
+      (a.name && a.name.toLowerCase().includes(q))
+    ).slice(0, 20); // On limite à 20 résultats pour ne pas ralentir
+  },
+
+  getByCode(code) {
+    if (typeof AirportsDB === 'undefined') return null;
+    return AirportsDB.find(a => a.code === code);
+  }
+};
 
 // ==========================================
 // UTILITAIRES GLOBAUX
