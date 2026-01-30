@@ -24,33 +24,6 @@ try {
 } catch (e) {
   console.log("Firebase non configuré");
 }
-// ==========================================
-// MOTEUR DE RECHERCHE AÉROPORTS
-// ==========================================
-const AirportSearch = {
-  search(query) {
-    // Sécurité : si la base de données n'est pas chargée
-    if (typeof AirportsDB === 'undefined') {
-        console.error("Erreur : Le fichier airports.js n'est pas chargé correctement.");
-        return [];
-    }
-    
-    const q = query.toLowerCase().trim();
-    if (q.length < 2) return [];
-
-    // Recherche dans le code IATA (ex: CDG), la ville ou le nom
-    return AirportsDB.filter(a => 
-      (a.code && a.code.toLowerCase().includes(q)) ||
-      (a.city && a.city.toLowerCase().includes(q)) ||
-      (a.name && a.name.toLowerCase().includes(q))
-    ).slice(0, 20); // On limite à 20 résultats pour ne pas ralentir
-  },
-
-  getByCode(code) {
-    if (typeof AirportsDB === 'undefined') return null;
-    return AirportsDB.find(a => a.code === code);
-  }
-};
 
 // ==========================================
 // UTILITAIRES GLOBAUX
@@ -114,31 +87,7 @@ const Utils = {
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2) * Math.sin(dLon/2);
     return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
   },
-  const AirportSearch = {
-  search(query) {
-    // Vérifie que la base de données est bien chargée
-    if (typeof AirportsDB === 'undefined') {
-        console.error("Erreur : AirportsDB n'est pas chargé.");
-        return [];
-    }
-    
-    const q = query.toLowerCase().trim();
-    if (q.length < 2) return [];
-
-    // Recherche dans le code, la ville, le nom ou le pays
-    // On limite à 20 résultats pour la performance
-    return AirportsDB.filter(a => 
-      (a.code && a.code.toLowerCase().includes(q)) ||
-      (a.city && a.city.toLowerCase().includes(q)) ||
-      (a.name && a.name.toLowerCase().includes(q))
-    ).slice(0, 20);
-  },
-
-  getByCode(code) {
-    if (typeof AirportsDB === 'undefined') return null;
-    return AirportsDB.find(a => a.code === code);
-  }
-};
+  
   exportTripData(tripId) {
     const trip = Storage.getTrip(tripId);
     const data = {
