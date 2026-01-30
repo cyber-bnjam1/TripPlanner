@@ -120,7 +120,7 @@ body {
   background: var(--ios-blue);
   color: white;
   border: none;
-  font-size: 28px;
+  font-size: 32px; /* Augmenté pour meilleure visibilité */
   font-weight: 300;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0,122,255,0.4), 0 8px 24px rgba(0,0,0,0.15);
@@ -129,6 +129,9 @@ body {
   align-items: center;
   justify-content: center;
   transition: transform 0.2s, box-shadow 0.2s;
+  line-height: 1; /* Important pour centrer le + */
+  padding: 0; /* Reset du padding */
+  padding-bottom: 4px; /* Ajustement fin pour le + */
 }
 
 .fab:hover {
@@ -142,6 +145,7 @@ body {
 .fab.hidden {
   display: none;
 }
+
 
 /* Nouveau style pour la home sans bottom nav */
 body:has(.bottom-nav.hidden) .fab {
